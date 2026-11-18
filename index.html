@@ -164,11 +164,13 @@
   .links button { border-color:var(--edge); background:linear-gradient(90deg, var(--tint) 0%, rgba(18,18,18,.78) 55%); }
   .seeTrust { margin-top:10px; width:100%; font:inherit; font-size:13px; font-weight:600; padding:13px; border-radius:12px; background:transparent; color:var(--fg); border:1px solid var(--line); cursor:pointer; }
   footer .legal { display:inline-block; margin-top:8px; font-size:9.5px; letter-spacing:.12em; color:#555; }
+  .foot { padding-bottom:90px; }
+  .ovx { position:fixed; top:14px; right:14px; z-index:3; width:40px; height:40px; border-radius:50%; border:none; cursor:pointer; font-size:15px; background:rgba(0,0,0,.25); color:var(--txt); }
   footer { line-height:1.6; margin-top:44px; font-size:10.5px; letter-spacing:.3em; text-transform:uppercase; color:#666; }
   .sound { margin-top:14px; font:inherit; font-size:10px; letter-spacing:.3em; text-transform:uppercase; background:none; border:none; color:#666; cursor:pointer; }
 
   /* ===== Écran "Vous avez choisi…" aux couleurs du réseau ===== */
-  .overlay { position:fixed; inset:0; z-index:10; display:flex; align-items:safe center; justify-content:center; padding:32px 22px; overflow-y:auto;
+  .overlay { position:fixed; inset:0; z-index:10; display:flex; align-items:safe center; justify-content:center; padding:56px 22px 120px; overflow-y:auto;
     color:var(--txt); visibility:hidden; transition:visibility 0s .6s; }
   .overlay.open { visibility:visible; transition:visibility 0s; }
   .burst { position:fixed; left:var(--cx,50vw); top:var(--cy,50vh); width:300vmax; height:300vmax; margin:-150vmax 0 0 -150vmax;
@@ -182,7 +184,7 @@
   .overlay.open .card > :nth-child(5) { transition-delay:.5s }
   .vid { display:none; margin-bottom:16px; }
   .vid.on { display:block; }
-  .ttframe { width:100%; max-width:340px; margin:0 auto; height:370px; border-radius:16px; overflow:hidden; background:#fff; }
+  .ttframe { width:100%; max-width:260px; margin:0 auto; aspect-ratio:9/16; max-height:60vh; border-radius:16px; overflow:hidden; background:#111; }
   .ttframe iframe { width:100%; height:100%; border:0; }
   .overlay.tt .logo { width:60px; height:60px; margin-bottom:12px; } .overlay.tt h2 { margin-bottom:14px; }
   .vlabel { font-size:11px; letter-spacing:.3em; text-transform:uppercase; opacity:.85; margin-bottom:10px; }
@@ -213,8 +215,8 @@
   .sheet.open { visibility:visible; transition:visibility 0s; }
   .sheet .scrim { position:absolute; inset:0; background:rgba(0,0,0,.6); opacity:0; transition:opacity .4s; }
   .sheet.open .scrim { opacity:1; }
-  .sheet .panel { position:relative; width:100%; max-width:480px; background:#141414; border:1px solid var(--line); border-bottom:none; border-radius:22px 22px 0 0;
-    padding:26px 22px 30px; text-align:left; transform:translate3d(0,100%,0); transition:transform .45s var(--ease); will-change:transform; }
+  .sheet .panel { position:relative; width:100%; max-width:480px; max-height:92vh; overflow-y:auto; background:#141414; border:1px solid var(--line); border-bottom:none; border-radius:22px 22px 0 0;
+    padding:26px 22px 110px; text-align:left; transform:translate3d(0,100%,0); transition:transform .45s var(--ease); will-change:transform; }
   .sheet.open .panel { transform:none; }
   .panel h3 { font-size:20px; font-weight:700; } .panel > p { color:var(--dim); font-size:13.5px; margin-top:6px; line-height:1.55; }
   .panel dl { margin-top:16px; display:grid; gap:12px; }
@@ -379,7 +381,7 @@
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="scrim" id="scrim"></div>
   <div class="panel">
-    <h3 id="sheetTitle">Travaillons ensemble</h3>
+    <div class="mkhead"><h3 id="sheetTitle">Travaillons ensemble</h3><button class="x" id="sheetX" aria-label="Fermer">✕</button></div>
     <p>Marques, entreprises, associations, collectivités : parlons de votre projet.</p>
     <dl>
       <div><dt>Ce que je peux faire pour vous</dt><dd>Placement de produit dans mes vidéos YouTube · Vidéo dédiée sur TikTok, Snap et Insta · Concept sur-mesure autour de votre marque · Mention en live TikTok · Stories · Présence à vos événements</dd></div>
@@ -423,13 +425,14 @@
 <!-- Écran réseau -->
 <div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
   <div class="burst"></div>
+  <button class="ovx" id="ovx" aria-label="Retour">✕</button>
   <div class="card">
     <div class="logo" id="ovLogo"></div>
     <div class="small">Vous avez choisi</div>
     <h2 id="ovTitle">TikTok</h2>
     <div class="stats" id="stats"></div>
     <div class="vid" id="vid"><div class="vlabel">Ma dernière vidéo</div><div class="frame"><iframe id="yt" title="Dernière vidéo YouTube de Space 974" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div></div>
-    <div class="vid" id="ttvid"><div class="vlabel">Mes dernières vidéos</div><div class="ttframe"><iframe id="tt" title="Dernières vidéos TikTok de Space 974" allow="encrypted-media; fullscreen" allowfullscreen></iframe></div></div>
+    <div class="vid" id="ttvid"><div class="vlabel">Ma dernière vidéo</div><div class="ttframe"><iframe id="tt" title="Dernières vidéos TikTok de Space 974" allow="encrypted-media; fullscreen" allowfullscreen></iframe></div></div>
     <div class="choices">
       <a class="primary" id="goBtn" href="#" target="_blank" rel="noopener">Accéder au compte</a>
       <button id="statsBtn">Voir les stats</button>
@@ -508,6 +511,7 @@ const COMPTEURS = [
 ];
 const VUES_TIKTOK_12MOIS = 4200000; // à mettre à jour avec tes stats TikTok
 let YT_VUES = 750000;
+let TT_LATEST = null; // rempli tout seul par le serveur (dernière vidéo TikTok)
 const YT_CHANNEL = "UCg9ejLudjZd4c2NWw1lmKdg";
 /* Playlist YouTube "vidéos longues uniquement" (sans Shorts) : ta dernière vidéo s'affiche toujours en premier. */
 const YT_LONGUES = "UULFg9ejLudjZd4c2NWw1lmKdg";
@@ -582,6 +586,7 @@ async function liveTikTokSnap() {
     const d = await (await fetch('/api/counts')).json();
     if (d.tiktok) setAbonnes('TikTok', d.tiktok, true);
     if (d.snapchat) setAbonnes('Snapchat', d.snapchat, true);
+    if (d.tiktokLatest) TT_LATEST = d.tiktokLatest;
     if (d.tiktokLikes) setStat('TikTok', "J'aime", short(d.tiktokLikes));
     if (d.tiktokVideos) setStat('TikTok', 'Vidéos', full(d.tiktokVideos));
   } catch(e) {}
@@ -685,7 +690,7 @@ function openChoice(r, e) {
   vid.classList.toggle('on', isYT); ov.classList.toggle('yt', isYT);
   const isTT = r.nom === 'TikTok', tt = document.getElementById('tt');
   document.getElementById('ttvid').classList.toggle('on', isTT); ov.classList.toggle('tt', isTT);
-  if (isTT && !tt.hasAttribute('src')) tt.src = 'https://www.tiktok.com/embed/@_space974_';
+  if (isTT && !tt.hasAttribute('src')) tt.src = TT_LATEST ? 'https://www.tiktok.com/player/v1/' + TT_LATEST + '?music_info=1&description=1&rel=0' : 'https://www.tiktok.com/embed/@_space974_';
   if (isYT && !yt.hasAttribute('src')) yt.src = "https://www.youtube-nocookie.com/embed/videoseries?list=" + YT_LONGUES;
   statsBox.classList.remove('show');
   if (!r.stats) { statsBtn.style.display = 'none'; statsBox.innerHTML = ''; }
@@ -703,11 +708,13 @@ function openChoice(r, e) {
 function closeChoice() { ov.classList.remove('open'); document.getElementById('yt').removeAttribute('src'); document.getElementById('tt').removeAttribute('src'); if (lastFocus) lastFocus.focus({ preventScroll:true }); }
 statsBtn.onclick = () => statsBox.classList.toggle('show');
 document.getElementById('backBtn').onclick = closeChoice;
+document.getElementById('ovx').onclick = closeChoice;
 
 // Fenêtre collab
 const sheet = document.getElementById('sheet');
 document.getElementById('collabBtn').onclick = () => sheet.classList.add('open');
 document.getElementById('seeTrust').onclick = () => { sheet.classList.remove('open'); setTimeout(() => document.getElementById('confiance').scrollIntoView({ behavior:'smooth', block:'start' }), 250); };
+document.getElementById('sheetX').onclick = () => sheet.classList.remove('open');
 document.getElementById('scrim').onclick = () => sheet.classList.remove('open');
 const MAIL = 'space97413@gmail.com';
 const mailBtn = document.getElementById('mailBtn');
@@ -728,6 +735,45 @@ copyBtn.onclick = async () => {
   copyBtn.textContent = 'Mail copié ✓'; copyBtn.classList.add('ok');
   setTimeout(() => { copyBtn.textContent = 'Copier le mail'; copyBtn.classList.remove('ok'); }, 2000);
 };
+
+// ===== Petits effets sonores (créés dans le code, aucun fichier) =====
+let AC = null;
+function ac() { try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch(e) {} return AC; }
+function tone(freq, dur, { type = 'sine', vol = .06, to = null, delay = 0 } = {}) {
+  const a = ac(); if (!a) return;
+  const t0 = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.setValueAtTime(freq, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + .008); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0 + dur + .02);
+}
+function whoosh(dur = .35, vol = .05, up = true) {
+  const a = ac(); if (!a) return;
+  const n = a.createBuffer(1, a.sampleRate * dur, a.sampleRate), d = n.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain(), t0 = a.currentTime;
+  s.buffer = n; f.type = 'bandpass'; f.Q.value = 1.2;
+  f.frequency.setValueAtTime(up ? 400 : 2400, t0); f.frequency.exponentialRampToValueAtTime(up ? 2400 : 400, t0 + dur);
+  g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(vol, t0 + dur * .4); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  s.connect(f).connect(g).connect(a.destination); s.start(t0);
+}
+const SFX = {
+  tic:    () => tone(1800, .05, { type:'triangle', vol:.04 }),
+  ouvre:  () => { whoosh(.4, .05, true); tone(520, .18, { vol:.04, delay:.12 }); tone(780, .22, { vol:.035, delay:.2 }); },
+  ferme:  () => whoosh(.25, .035, false),
+  sheet:  () => { tone(440, .12, { vol:.04 }); tone(660, .16, { vol:.035, delay:.07 }); },
+  onglet: () => tone(1200, .06, { type:'triangle', vol:.035, to:1500 }),
+  copie:  () => { tone(880, .09, { vol:.045 }); tone(1320, .14, { vol:.04, delay:.08 }); },
+};
+// Branchement sur les boutons
+document.addEventListener('click', e => {
+  const b = e.target.closest('button, a'); if (!b) return;
+  if (b.closest('#links')) return SFX.ouvre();
+  if (b.id === 'backBtn' || b.id === 'ovx' || b.id === 'sheetX' || b.dataset.close) return SFX.ferme();
+  if (b.id === 'collabBtn' || b.id === 'mkBtn') return SFX.sheet();
+  if (b.id === 'copyBtn') return SFX.copie();
+  if (b.closest('.tabs')) return SFX.onglet();
+  SFX.tic();
+}, true);
 
 // Media kit
 const mk = document.getElementById('mk');
