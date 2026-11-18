@@ -170,12 +170,14 @@
   .sound { margin-top:14px; font:inherit; font-size:10px; letter-spacing:.3em; text-transform:uppercase; background:none; border:none; color:#666; cursor:pointer; }
 
   /* ===== Écran "Vous avez choisi…" aux couleurs du réseau ===== */
-  .overlay { position:fixed; inset:0; z-index:10; display:flex; align-items:safe center; justify-content:center; padding:56px 22px 120px; overflow-y:auto;
-    color:var(--txt); visibility:hidden; transition:visibility 0s .6s; }
-  .overlay.open { visibility:visible; transition:visibility 0s; }
-  .burst { position:fixed; left:var(--cx,50vw); top:var(--cy,50vh); width:300vmax; height:300vmax; margin:-150vmax 0 0 -150vmax;
-    border-radius:50%; background:var(--bg); transform:scale(0); will-change:transform; transition:transform .55s var(--ease); z-index:-1; }
-  .overlay.open .burst { transform:scale(1); transition:transform .75s var(--ease); }
+  .overlay { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; padding:56px 22px 120px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    color:var(--txt); background:var(--bg); visibility:hidden; opacity:0;
+    clip-path:circle(0px at var(--cx,50%) var(--cy,50%)); -webkit-clip-path:circle(0px at var(--cx,50%) var(--cy,50%));
+    transition:clip-path .55s var(--ease), -webkit-clip-path .55s var(--ease), opacity .2s, visibility 0s .55s; }
+  .overlay.open { visibility:visible; opacity:1;
+    clip-path:circle(160vmax at var(--cx,50%) var(--cy,50%)); -webkit-clip-path:circle(160vmax at var(--cx,50%) var(--cy,50%));
+    transition:clip-path .7s var(--ease), -webkit-clip-path .7s var(--ease), opacity .1s, visibility 0s; }
+  .overlay .card { margin:auto; }
   .card { width:100%; max-width:400px; text-align:center; }
   .card > * { opacity:0; transform:translate3d(0,16px,0); transition:opacity .35s, transform .5s var(--ease); }
   .overlay.open .card > * { opacity:1; transform:none; transition:opacity .5s, transform .6s var(--ease); }
@@ -424,7 +426,6 @@
 
 <!-- Écran réseau -->
 <div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
-  <div class="burst"></div>
   <button class="ovx" id="ovx" aria-label="Retour">✕</button>
   <div class="card">
     <div class="logo" id="ovLogo"></div>
@@ -679,7 +680,8 @@ function openChoice(r, e) {
   const t = r.theme, set = (k, v) => ov.style.setProperty(k, v);
   set('--bg', t.bg); set('--txt', t.txt); set('--btn', t.btn); set('--btntxt', t.btntxt);
   set('--logo', t.logo); set('--chip', t.chip); set('--logofx', t.logofx || 'none'); set('--tshadow', t.tshadow || 'none');
-  if (e && e.clientX) { set('--cx', e.clientX + 'px'); set('--cy', e.clientY + 'px'); } else { set('--cx', '50vw'); set('--cy', '50vh'); }
+  if (e && e.clientX) { set('--cx', e.clientX + 'px'); set('--cy', e.clientY + 'px'); } else { set('--cx', '50%'); set('--cy', '50%'); }
+  ov.scrollTop = 0;
   document.getElementById('ovLogo').innerHTML = svg(r.nom);
   document.getElementById('ovTitle').textContent = r.nom;
   const go = document.getElementById('goBtn');
@@ -738,7 +740,19 @@ copyBtn.onclick = async () => {
 
 // ===== Petits effets sonores (créés dans le code, aucun fichier) =====
 let AC = null;
-function ac() { try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch(e) {} return AC; }
+function ac() {
+  try {
+    if (!AC || AC.state === 'closed') AC = new (window.AudioContext || window.webkitAudioContext)();
+    if (AC.state !== 'running') AC.resume();
+  } catch(e) {}
+  return AC;
+}
+// iPhone coupe l'audio quand on quitte la page : on le réveille au premier toucher
+['pointerdown', 'touchend', 'keydown'].forEach(ev => addEventListener(ev, () => {
+  const a = ac(); if (!a) return;
+  try { const s = a.createBufferSource(); s.buffer = a.createBuffer(1, 1, 22050); s.connect(a.destination); s.start(0); } catch(e) {}
+}, { passive:true, capture:true }));
+document.addEventListener('visibilitychange', () => { if (!document.hidden && AC && AC.state !== 'running') { try { AC.resume(); } catch(e) {} } });
 function tone(freq, dur, { type = 'sine', vol = .06, to = null, delay = 0 } = {}) {
   const a = ac(); if (!a) return;
   const t0 = a.currentTime + delay, o = a.createOscillator(), g = a.createGain();
