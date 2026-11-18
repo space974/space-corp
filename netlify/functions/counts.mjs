@@ -13,7 +13,7 @@ async function lire(url, regex) {
 
 export default async () => {
   const [tiktok, snapchat] = await Promise.all([
-    lire("https://www.tiktok.com/@_space974_", /"followerCount":(\d+)/),
+    lire("https://www.tiktok.com/@_space974_", /"statsV2":\{"followerCount":"(\d+)"/),
     lire("https://www.snapchat.com/@space_974", /"subscriberCount":"?(\d+)/),
   ]);
   return Response.json(
