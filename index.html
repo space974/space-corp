@@ -1077,7 +1077,7 @@ function renderMK() {
 }
 document.getElementById('mklogos').innerHTML = document.getElementById('partners').innerHTML;
 // Media kit : tant que le site du media kit n'existe pas, on ouvre le résumé intégré.
-const MEDIAKIT_URL = null; // ex. 'https://space974-mediakit.netlify.app' quand il sera en ligne
+const MEDIAKIT_URL = 'https://space974-mediakit.netlify.app'; // ex. 'https://space974-mediakit.netlify.app' quand il sera en ligne
 document.getElementById('mkBtn').onclick = () => {
   if (MEDIAKIT_URL) { window.open(MEDIAKIT_URL, '_blank', 'noopener'); return; }
   sheet.classList.remove('open'); renderMK(); renderVues(); setTimeout(() => mk.classList.add('open'), 250);
